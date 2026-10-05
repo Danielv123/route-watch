@@ -1,0 +1,12 @@
+# Optional overlay for an existing Nginx Proxy Manager Docker network.
+services:
+  route-watch:
+    networks:
+      default: {}
+      proxy:
+        aliases: [route-watch]
+
+networks:
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:-web}

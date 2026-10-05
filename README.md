@@ -115,6 +115,15 @@ For `compose.production.yaml`, set `BIND_ADDRESS` to the server's private LAN ad
 
 In Nginx Proxy Manager, use the domain you own, forwarding scheme `http`, the server's private address, and port `8787`. Enable an SSL certificate and Force SSL. OAuth client credentials are for **server-to-Tailscale API authentication**, not browser sign-in; dashboard authentication is HTTP Basic or your own upstream identity proxy. The app needs no OAuth callback URL. Keep the proxy's original Host header and Authorization header.
 
+Alternatively, use Docker DNS when Nginx Proxy Manager shares an external Docker network. Add these settings to the deployment's `.env` (Linux server):
+
+```dotenv
+COMPOSE_FILE=compose.production.yaml:compose.proxy.yaml
+PROXY_NETWORK=web
+```
+
+The network must already exist and contain the proxy. Run `docker compose up -d`; then set Nginx's forward hostname to `route-watch`, scheme `http`, port `8787`. Use `docker compose` without `-f` for subsequent updates and recreations so both configured files are applied. The shared-network alias survives recreation. Keep the public hostname in `ALLOWED_HOSTS`; the proxy must preserve that Host header.
+
 Without Docker:
 
 ```sh
