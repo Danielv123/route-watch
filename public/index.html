@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Read-only Tailscale route conflict detection and subnet access analysis.">
+  <title>Route Watch</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to routes</a>
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30">Route Watch</a>
+    <div class="top-right"><span class="read-only">READ ONLY</span><a href="https://login.tailscale.com/admin/machines" target="_blank" rel="noreferrer">Tailscale console ↗</a></div>
+  </header>
+  <main id="main">
+    <div class="heading"><div><div class="eyebrow">TAILNET / ROUTING</div><h1>Subnet routes</h1><p id="subtitle">Track approvals. Find conflicts. Understand access.</p></div><div class="refresh-group"><span id="freshness" aria-live="polite"></span><button id="refresh" class="button primary" type="button">Refresh inventory</button></div></div>
+    <div id="notices" aria-live="polite"></div>
+    <section id="setup" class="setup" hidden>
+      <div class="setup-icon">↔</div><div><h2>Connect your tailnet</h2><p>Add a read-only credential to the server’s <code>.env</code> file, then restart the service. Your credential stays on the server.</p>
+      <pre>TAILSCALE_TAILNET=your-tailnet.ts.net
+TAILSCALE_API_TOKEN=your-read-only-token</pre>
+      <p>Required read scopes:</p><div id="scopes" class="scope-list"></div>
+      <p class="muted">Prefer OAuth client credentials for automatic token renewal. Full setup instructions are included in README.md.</p>
+      <a href="/?demo=1" class="button primary">Explore sample inventory</a></div>
+    </section>
+    <div id="workspace" hidden>
+      <section id="metrics" class="metrics" aria-label="Route summary"></section>
+      <div class="workspace">
+        <section class="inventory" aria-labelledby="inventory-title">
+          <div class="panel-title"><h2 id="inventory-title">Route inventory</h2><span id="route-count" class="count"></span></div>
+          <div class="filters"><label class="search"><span class="sr-only">Search subnets or devices</span><input id="search" type="search" placeholder="Search subnet or device…" autocomplete="off"></label><label><span class="sr-only">Filter routes</span><select id="filter"><option value="all">All routes</option><option value="attention">Needs review</option><option value="duplicate">Duplicate approvals</option><option value="overlap">Overlapping prefixes</option><option value="stale">Unused approvals</option><option value="pending">Awaiting approval</option></select></label></div>
+          <div id="route-list" class="route-list"></div>
+          <div class="inventory-footer">Default routes (exit nodes) are excluded.<br><span id="exit-count"></span></div>
+        </section>
+        <section id="detail" class="detail" aria-label="Selected subnet details" aria-live="polite"></section>
+      </div>
+    </div>
+    <footer class="footer"><span>Approval state is separate from advertisement state.</span><span>Read-only · No route or policy changes</span></footer>
+  </main>
+</body>
+</html>

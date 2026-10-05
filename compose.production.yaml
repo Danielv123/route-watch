@@ -1,0 +1,17 @@
+name: route-watch
+services:
+  route-watch:
+    image: ${ROUTE_WATCH_IMAGE:-ghcr.io/danielv123/route-watch:latest}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8787
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${PUBLISHED_PORT:-8787}:8787"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    mem_limit: 256m
+    pids_limit: 64
